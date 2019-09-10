@@ -54,7 +54,6 @@ public class FlipAdapter extends RecyclerView.Adapter<FlipAdapter.FlipViewHolder
     @NonNull
     @Override
     public FlipViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.e("onCreateVH", "Creatin ciews");
         return new FlipViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_flip_view, parent, false), flipInterfaceInAdapter);
 
@@ -75,7 +74,6 @@ public class FlipAdapter extends RecyclerView.Adapter<FlipAdapter.FlipViewHolder
 
     @Subscribe
     public void onEvent(EventData data) {
-        Log.e("onEvent", "Recieved " + data.isSaveData + data.isFront());
         if (data.isSaveData) {
             allObjects.get(data.getPosition()).isFront = data.isFront();
         } else {
@@ -101,7 +99,6 @@ public class FlipAdapter extends RecyclerView.Adapter<FlipAdapter.FlipViewHolder
 
         @Override
         public void onClick(View view) {
-            Log.e(FlipViewHolder.class.getSimpleName(), "Clicked in VH");
             flipInterface.onClickFlipIt(getAdapterPosition());
         }
     }

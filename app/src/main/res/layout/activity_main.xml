@@ -10,6 +10,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <!-- level banner -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+            <TextView
+                android:id="@+id/tv_level"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Level"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
         <!-- player scores -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,7 +105,7 @@
         <!-- turn by turn -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="60dp"
             android:orientation="horizontal">
             <!-- key -->
             <LinearLayout
@@ -119,6 +134,7 @@
 
         </LinearLayout>
 
+        <!-- playing board -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_main"
             android:layout_width="match_parent"
@@ -132,13 +148,53 @@
         android:layout_height="match_parent"
         android:background="#50030303"
         android:visibility="gone">
-        <TextView
-            android:id="@+id/tv_game_over"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="GAME OVER"
-            android:gravity="center"
-            android:textSize="25sp"
-            android:textStyle="bold|italic"/>
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tv_game_over"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="GAME OVER"
+                    android:gravity="center"
+                    android:textSize="25sp"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold|italic"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/btn_restart"
+                    android:layout_width="150dp"
+                    android:layout_height="70dp"
+                    android:text="Restart"
+                    android:gravity="center"
+                    android:textSize="25sp"
+                    android:textStyle="bold|italic"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center">
+                <Button
+                    android:id="@+id/btn_level"
+                    android:layout_width="200dp"
+                    android:layout_height="70dp"
+                    android:text="Next Level"
+                    android:gravity="center"
+                    android:textSize="25sp"
+                    android:textStyle="bold|italic"/>
+            </LinearLayout>
+        </LinearLayout>
+
     </FrameLayout>
 </FrameLayout>
