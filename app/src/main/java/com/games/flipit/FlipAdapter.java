@@ -34,6 +34,19 @@ public class FlipAdapter extends RecyclerView.Adapter<FlipAdapter.FlipViewHolder
         EventBus.getDefault().register(this);
     }
 
+    public boolean isGameOver() {
+        for (FlipDataObject fdo: allObjects) {
+            if (!fdo.isDisable) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setIsDisable(int position, boolean isDisable) {
+        allObjects.get(position).isDisable = isDisable;
+    }
+
     public FlipDataObject getDataObject(int position) {
         return allObjects.get(position);
     }

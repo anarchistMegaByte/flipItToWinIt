@@ -6,4 +6,6 @@ public class FlipDataObject {
     boolean isFront = false;
     int image_id_back;
     int image_id_front;
+    int imageNum;
+    boolean isDisable=false;
 }

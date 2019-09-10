@@ -1,14 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_main"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
-</LinearLayout>
+        android:orientation="vertical">
+        <!-- player scores -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <!-- Player 1-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <!-- name-->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/tv_player_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Player 1"
+                        android:gravity="center">
+
+                    </TextView>
+                </LinearLayout>
+                <!-- score -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/tv_player_1_score"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="0"
+                        android:gravity="center">
+
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Player 2-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <!-- name-->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/tv_player_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Player 2"
+                        android:gravity="center">
+                    </TextView>
+                </LinearLayout>
+                <!-- score -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/tv_player_2_score"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="0"
+                        android:gravity="center">
+                    </TextView>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- turn by turn -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal">
+            <!-- key -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Turn Of:"
+                    android:gravity="center|right"/>
+            </LinearLayout>
+
+            <!-- turn player name -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tv_turn_by_player"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="-"
+                    android:gravity="center|left"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/fl_game_over"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#50030303"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_game_over"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="GAME OVER"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:textStyle="bold|italic"/>
+    </FrameLayout>
+</FrameLayout>

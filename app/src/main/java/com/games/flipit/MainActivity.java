@@ -6,10 +6,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements FlipInterface{
 
@@ -18,10 +23,114 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
     private RecyclerView.LayoutManager layoutManager;
     ArrayList<FlipDataObject> fdo;
 
+    TextView tvPlayer1Score;
+    TextView tvPlayer2Score;
+    TextView tvPlayerTurnName;
+
+    static PlayerObject PlayerOne;
+    static PlayerObject PlayerTwo;
+
+    HashMap<Integer, ArrayList<Integer>> mapping = new HashMap<>();
+
+    FrameLayout flGameOver;
+    TextView tvGameOver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initViews();
+        setRecyclerView();
+        initPlayers();
+    }
+
+    private void initPlayers() {
+        PlayerOne = new PlayerObject();
+        PlayerTwo = new PlayerObject();
+        PlayerOne.isTurn = true;
+        tvPlayerTurnName.setText("Player 1");
+    }
+
+    private void initViews() {
+        tvPlayer1Score = findViewById(R.id.tv_player_1_score);
+        tvPlayer2Score = findViewById(R.id.tv_player_2_score);
+        tvPlayerTurnName = findViewById(R.id.tv_turn_by_player);
+        flGameOver = findViewById(R.id.fl_game_over);
+        tvGameOver = findViewById(R.id.tv_game_over);
+    }
+
+    public int returnDrawable(int imageNum) {
+        if (imageNum == 1) {
+            return R.drawable.a1;
+        }
+        if (imageNum == 2) {
+            return R.drawable.a2;
+        }
+        if (imageNum == 3) {
+            return R.drawable.a3;
+        }
+        if (imageNum == 4) {
+            return R.drawable.a4;
+        }
+        if (imageNum == 5) {
+            return R.drawable.a5;
+        }
+        if (imageNum == 6) {
+            return R.drawable.a6;
+        }
+        if (imageNum == 7) {
+            return R.drawable.a7;
+        }
+        if (imageNum == 8) {
+            return R.drawable.a8;
+        }
+        if (imageNum == 9) {
+            return R.drawable.a9;
+        }
+        if (imageNum == 10) {
+            return R.drawable.a10;
+        } else {
+            return R.drawable.a1;
+        }
+    }
+    public ArrayList<FlipDataObject> assignImages(int totalNum) {
+        ArrayList<Integer> listInt = new ArrayList<>();
+        for (int i=1; i<=totalNum; i++) {
+            listInt.add(i);
+            listInt.add(i);
+        }
+        Collections.shuffle(listInt);
+        for(int i=0; i<listInt.size(); i++) {
+            if (mapping.containsKey(listInt.get(i))) {
+                mapping.get(listInt.get(i)).add(i+1);
+            } else {
+                ArrayList<Integer> places = new ArrayList<>();
+                places.add(i+1);
+                mapping.put(listInt.get(i), places);
+
+            }
+            Log.e("Array Random : ", listInt.get(i) + "");
+        }
+        for (Integer image: mapping.keySet()){
+            Log.e("Image Number:", image + "");
+            for (int places: mapping.get(image)) {
+                Log.e("Place:" , places + "");
+            }
+        }
+
+        ArrayList<FlipDataObject> listFlipData = new ArrayList<>();
+        for(int eachNum: listInt) {
+            FlipDataObject fdo = new FlipDataObject();
+            fdo.isFront = true;
+            fdo.image_id_front = returnDrawable(eachNum);
+            fdo.image_id_back = R.color.cardview_dark_background;
+            fdo.imageNum = eachNum;
+            listFlipData.add(fdo);
+        }
+        return listFlipData;
+    }
+
+    private void setRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.rv_main);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -32,15 +141,8 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
         recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
-        fdo = new ArrayList<>();
-        for (int i =0;i < 12; i++) {
-            FlipDataObject obj = new FlipDataObject();
-            obj.isFront = false;
-            obj.image_id_back = R.drawable.ic_launcher_foreground;
-            obj.image_id_front = R.drawable.a1;
+        fdo = assignImages(6);
 
-            fdo.add(obj);
-        }
         mAdapter = new FlipAdapter(this, fdo, this);
 //        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         recyclerView.setAdapter(mAdapter);
@@ -61,7 +163,122 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
 
     @Override
     public void onClickFlipIt(int position) {
-        Log.e(MainActivity.class.getSimpleName(), "Isnside onclick interface");
-        runThisOnClick(position);
+        FlipDataObject flipDataObject = mAdapter.getDataObject(position);
+
+        if (!flipDataObject.isDisable) {
+            boolean toFlip = false;
+            if (PlayerOne.isTurn) {
+                if (PlayerOne.totalOpenedTiles == 2) {
+
+                    // Check for points here if to be added for not
+                    if (PlayerOne.openedTypes[0] == PlayerOne.openedTypes[1]) {
+                        PlayerOne.playerScore ++;
+                        // Disable clicks on those tiles now
+                        mAdapter.setIsDisable(PlayerOne.openedPlaces[0], true);
+                        mAdapter.setIsDisable(PlayerOne.openedPlaces[1], true);
+
+                        tvPlayer1Score.setText(PlayerOne.playerScore + "");
+                    } else {
+                        // unflip those
+                        runThisOnClick(PlayerOne.openedPlaces[0]);
+                        runThisOnClick(PlayerOne.openedPlaces[1]);
+
+                        mAdapter.setIsDisable(PlayerOne.openedPlaces[0], false);
+                        mAdapter.setIsDisable(PlayerOne.openedPlaces[1], false);
+                    }
+
+                    //Animation for chance of player 2
+                    tvPlayerTurnName.setText("Player 2");
+
+                    // reset player one
+                    PlayerOne.totalOpenedTiles = 0;
+                    PlayerOne.openedPlaces = new int[2];
+                    PlayerOne.openedTypes = new int[2];
+
+                    // Change chance to Player 2.
+                    PlayerOne.isTurn = false;
+                    PlayerTwo.isTurn = true;
+
+                    checkforGameOver();
+                } else {
+                    toFlip = true;
+                    Log.e("Player one Opened", position + "");
+                    PlayerOne.openedPlaces[PlayerOne.totalOpenedTiles] = position;
+                    PlayerOne.openedTypes[PlayerOne.totalOpenedTiles] = flipDataObject.imageNum;
+                    PlayerOne.totalOpenedTiles += 1;
+
+                    //Disable click on already flipped ones
+                    mAdapter.setIsDisable(PlayerOne.openedPlaces[0], true);
+                }
+            }
+            if (PlayerTwo.isTurn) {
+                if (PlayerTwo.totalOpenedTiles == 2) {
+
+                    // Check for points here if to be added for not
+                    if (PlayerTwo.openedTypes[0] == PlayerTwo.openedTypes[1]) {
+                        PlayerTwo.playerScore ++;
+                        // Disable clicks on those tiles now
+                        mAdapter.setIsDisable(PlayerTwo.openedPlaces[0], true);
+                        mAdapter.setIsDisable(PlayerTwo.openedPlaces[1], true);
+
+                        tvPlayer2Score.setText(PlayerTwo.playerScore + "");
+                    } else {
+                        // unflip those
+                        runThisOnClick(PlayerTwo.openedPlaces[0]);
+                        runThisOnClick(PlayerTwo.openedPlaces[1]);
+
+                        mAdapter.setIsDisable(PlayerTwo.openedPlaces[0], false);
+                        mAdapter.setIsDisable(PlayerTwo.openedPlaces[1], false);
+                    }
+
+                    //Animation for chance of player 1
+                    tvPlayerTurnName.setText("Player 1");
+
+                    // reset player two
+                    PlayerTwo.totalOpenedTiles = 0;
+                    PlayerTwo.openedPlaces = new int[2];
+                    PlayerTwo.openedTypes = new int[2];
+
+                    // Change chance to Player 2.
+                    PlayerOne.isTurn = true;
+                    PlayerTwo.isTurn = false;
+
+                    checkforGameOver();
+                } else {
+                    toFlip = true;
+                    PlayerTwo.openedPlaces[PlayerTwo.totalOpenedTiles] = position;
+                    PlayerTwo.openedTypes[PlayerTwo.totalOpenedTiles] = flipDataObject.imageNum;
+                    PlayerTwo.totalOpenedTiles += 1;
+
+                    //Disable click on already flipped ones
+                    mAdapter.setIsDisable(PlayerTwo.openedPlaces[0], true);
+                }
+            }
+
+            if (toFlip) {
+                Log.e(MainActivity.class.getSimpleName(), "Isnside onclick interface");
+                runThisOnClick(position);
+            } else {
+                //Clean up act
+                //If game lost unfilp the flipped once.
+                // If game won make invisible the flipped once.
+            }
+        } else {
+            checkforGameOver();
+        }
+    }
+
+
+    public void checkforGameOver() {
+        if (mAdapter.isGameOver()) {
+            flGameOver.setVisibility(View.VISIBLE);
+            if (PlayerOne.playerScore > PlayerTwo.playerScore) {
+                tvGameOver.setText("Player 1 Wins");
+            } else if (PlayerTwo.playerScore > PlayerOne.playerScore){
+                tvGameOver.setText("Player 2 Wins");
+            } else {
+                tvGameOver.setText("Game Over. No One wins");
+            }
+        }
     }
 }

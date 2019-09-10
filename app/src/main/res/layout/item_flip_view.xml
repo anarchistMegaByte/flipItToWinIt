@@ -9,6 +9,19 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
+        <RelativeLayout
+            android:id="@+id/card_front"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_item_front"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:src="@color/cardview_dark_background" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/card_back"
@@ -24,18 +37,5 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/card_front"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_item_front"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:src="@color/cardview_dark_background" />
-
-        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
