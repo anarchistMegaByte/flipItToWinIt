@@ -79,6 +79,13 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
         tvLevel.setText("Level " + curr_level);
     }
 
+    public void restartTheGame() {
+        currentLevel = 1;
+        setRecyclerView(6);
+        initPlayers(currentLevel);
+        flGameOver.setVisibility(View.GONE);
+    }
+
     private void initViews() {
         tvPlayer1Score = findViewById(R.id.tv_player_1_score);
         tvPlayer2Score = findViewById(R.id.tv_player_2_score);
@@ -90,10 +97,7 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
         btnRestart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentLevel = 1;
-                setRecyclerView(6);
-                initPlayers(currentLevel);
-                flGameOver.setVisibility(View.GONE);
+                restartTheGame();
             }
         });
         btnLevel = findViewById(R.id.btn_level);
@@ -108,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
                         setRecyclerView(10);
                     initPlayers(currentLevel);
                     flGameOver.setVisibility(View.GONE);
+                } else {
+                    restartTheGame();
                 }
             }
         });
