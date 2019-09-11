@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -62,7 +65,12 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // remove title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
         initViews();
         setRecyclerView(6);
         initPlayers(currentLevel);
@@ -104,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
         btnLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (btnLevel.getText().toString().equals("Exit")) {
+                    Intent intent = new Intent(MainActivity.this, LaunchActivity.class);
+                    startActivity(intent);
+                }
                 if (currentLevel < totalLevels) {
                     currentLevel++;
                     if (currentLevel == 2)
@@ -330,6 +342,11 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
     public void checkforGameOver() {
         if (mAdapter.isGameOver()) {
             flGameOver.setVisibility(View.VISIBLE);
+            if (currentLevel==3) {
+                btnLevel.setText("Exit");
+            } else {
+                btnLevel.setText("Next Level");
+            }
             if (PlayerOne.playerScore > PlayerTwo.playerScore) {
                 tvGameOver.setText("Player 1 Wins");
             } else if (PlayerTwo.playerScore > PlayerOne.playerScore){
