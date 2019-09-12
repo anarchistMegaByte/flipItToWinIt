@@ -6,4 +6,5 @@ public class PlayerObject {
     int totalOpenedTiles = 0;
     int[] openedPlaces = new int[2];
     int[] openedTypes = new int[2];
+    int totalAttempts = 0;
 }

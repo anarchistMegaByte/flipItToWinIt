@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,6 +14,7 @@ public class LaunchActivity extends AppCompatActivity {
 
     Button btnStart;
     Button btnInstructions;
+    boolean ameModeSingle = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class LaunchActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intentStart = new Intent(LaunchActivity.this, MainActivity.class);
+                intentStart.putExtra("is_single_player", ameModeSingle);
                 startActivity(intentStart);
             }
         });
@@ -40,4 +43,14 @@ public class LaunchActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void radioButtonClicked(View view) {
+        if (view.getId() == R.id.rb_single) {
+            ameModeSingle = true;
+        } else {
+            ameModeSingle = false;
+        }
+        Log.e("is_checked", ameModeSingle + "");
+    }
+
 }

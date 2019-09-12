@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
     TextView tvLevel;
     Button btnLevel;
 
+    TextView tvPlayer1Name;
+    TextView tvPlayer2Name;
+
     Handler mHandler = new Handler();
     Runnable mTask1 = new Runnable() {
         @Override
@@ -62,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
     int totalLevels = 3;
     int currentLevel = 1;
 
+    boolean singlePlayerMode = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +75,29 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+        tvPlayer1Name = findViewById(R.id.tv_player_1);
+        tvPlayer2Name = findViewById(R.id.tv_player_2);
+        tvPlayer1Score = findViewById(R.id.tv_player_1_score);
+        tvPlayer2Score = findViewById(R.id.tv_player_2_score);
+
+        singlePlayerMode = getIntent().getBooleanExtra("is_single_player", false);
+        if (getIntent().hasExtra("is_single_player") && singlePlayerMode) {
+
+            tvPlayer1Name.setText("Attempts :");
+
+            tvPlayer2Name.setVisibility(View.INVISIBLE);
+            tvPlayer2Score.setVisibility(View.INVISIBLE);
+        } else {
+            tvPlayer1Name.setText("Player 1");
+
+            tvPlayer2Name.setVisibility(View.VISIBLE);
+            tvPlayer2Score.setVisibility(View.VISIBLE);
+        }
+
         getSupportActionBar().hide();
         initViews();
-        setRecyclerView(6);
+        setRecyclerView(4);
         initPlayers(currentLevel);
     }
 
@@ -89,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
 
     public void restartTheGame() {
         currentLevel = 1;
-        setRecyclerView(6);
+        setRecyclerView(4);
         initPlayers(currentLevel);
         flGameOver.setVisibility(View.GONE);
     }
@@ -119,9 +144,9 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
                 if (currentLevel < totalLevels) {
                     currentLevel++;
                     if (currentLevel == 2)
-                        setRecyclerView(8);
+                        setRecyclerView(6);
                     if (currentLevel == 3)
-                        setRecyclerView(10);
+                        setRecyclerView(8);
                     initPlayers(currentLevel);
                     flGameOver.setVisibility(View.GONE);
                 } else {
@@ -235,14 +260,19 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
     }
 
     public void playerOneChanceDone() {
+        PlayerOne.totalAttempts++;
         // Check for points here if to be added for not
         if (PlayerOne.openedTypes[0] == PlayerOne.openedTypes[1]) {
             PlayerOne.playerScore ++;
             // Disable clicks on those tiles now
             mAdapter.setIsDisable(PlayerOne.openedPlaces[0], true);
             mAdapter.setIsDisable(PlayerOne.openedPlaces[1], true);
+            if (singlePlayerMode)
+                tvPlayer1Score.setText(PlayerOne.totalAttempts + "");
+            else {
+                tvPlayer1Score.setText(PlayerOne.playerScore + "");
+            }
 
-            tvPlayer1Score.setText(PlayerOne.playerScore + "");
         } else {
             // unflip those
             runThisOnClick(PlayerOne.openedPlaces[0]);
@@ -250,20 +280,25 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
 
             mAdapter.setIsDisable(PlayerOne.openedPlaces[0], false);
             mAdapter.setIsDisable(PlayerOne.openedPlaces[1], false);
+
+            if (singlePlayerMode)
+                tvPlayer1Score.setText(PlayerOne.totalAttempts + "");
         }
 
-        //Animation for chance of player 2
-        tvPlayerTurnName.setText("Player 2");
+        if (!singlePlayerMode) {
+            //Animation for chance of player 2
+            tvPlayerTurnName.setText("Player 2");
+
+            // Change chance to Player 2.
+            PlayerOne.isTurn = false;
+            PlayerTwo.isTurn = true;
+        }
+
 
         // reset player one
         PlayerOne.totalOpenedTiles = 0;
         PlayerOne.openedPlaces = new int[2];
         PlayerOne.openedTypes = new int[2];
-
-        // Change chance to Player 2.
-        PlayerOne.isTurn = false;
-        PlayerTwo.isTurn = true;
-
         checkforGameOver();
     }
 
@@ -347,13 +382,19 @@ public class MainActivity extends AppCompatActivity implements FlipInterface{
             } else {
                 btnLevel.setText("Next Level");
             }
-            if (PlayerOne.playerScore > PlayerTwo.playerScore) {
-                tvGameOver.setText("Player 1 Wins");
-            } else if (PlayerTwo.playerScore > PlayerOne.playerScore){
-                tvGameOver.setText("Player 2 Wins");
+
+            if (singlePlayerMode) {
+                tvGameOver.setText(PlayerOne.totalAttempts + " attempts to clear level " + currentLevel);
             } else {
-                tvGameOver.setText("Game Over. No One wins");
+                if (PlayerOne.playerScore > PlayerTwo.playerScore) {
+                    tvGameOver.setText("Player 1 Wins");
+                } else if (PlayerTwo.playerScore > PlayerOne.playerScore){
+                    tvGameOver.setText("Player 2 Wins");
+                } else {
+                    tvGameOver.setText("Game Over. No One wins");
+                }
             }
+
         }
     }
 }
